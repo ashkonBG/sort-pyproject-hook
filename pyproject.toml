@@ -11,4 +11,4 @@ requires-python = ">=3.9"
 dependencies = []
 
 [project.scripts]
-sort-pyproject = "hooks.sort-pyproject:main"
+sort-pyproject = "hooks.sort_pyproject:main"
