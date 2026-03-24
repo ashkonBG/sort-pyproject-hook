@@ -90,12 +90,6 @@ def main() -> int:
     had_changes = False
     for file_name in args.files:
         path = Path(file_name)
-        if not path.exists():
-            print(
-                f"[sort-pyproject] Error: file not found: {path}",
-                file=sys.stderr,
-            )
-            return 1
 
         changed, original, updated = process_file(path, sections)
 
