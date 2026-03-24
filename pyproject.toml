@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sort-pyproject-hook"
+version = "0.1.0"
+description = "A pre-commit hook to sort pyproject.toml files."
+authors = [{ name = "Ashkan" }]
+requires-python = ">=3.9"
+dependencies = []
+
+[project.scripts]
+sort-pyproject = "hooks.sort-pyproject:main"

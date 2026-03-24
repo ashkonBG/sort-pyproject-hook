@@ -1,0 +1,8 @@
+- id: sort-pyproject
+  name: Sort pyproject.toml
+  description: Sort pyproject.toml of each defined sections.
+  entry: sort-pyproject
+  language: python
+  types: [ toml ]
+  stages: [ pre-commit, pre-merge-commit, manual ]
+  files: ^pyproject\.toml$
