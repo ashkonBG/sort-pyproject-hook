@@ -62,8 +62,7 @@ def main() -> int:
     parser.add_argument(
         "files",
         nargs="*",
-        default=["pyproject.toml"],
-        help="Files to process (default: pyproject.toml)",
+        help="Files to process (passed automatically by pre-commit)",
     )
     parser.add_argument(
         "--check",
@@ -72,9 +71,8 @@ def main() -> int:
     )
     parser.add_argument(
         "--sections",
-        nargs="+",
-        default=["dependencies", "dev"],
-        help="Section names to sort (default: dependencies dev)",
+        default="dependencies,dev",
+        help="Comma-separated section names to sort (default: dependencies,dev)",
     )
     parser.add_argument(
         "--diff",
@@ -83,6 +81,9 @@ def main() -> int:
     )
 
     args = parser.parse_args()
+    sections = [s.strip() for s in args.sections.split(",") if s.strip()]
+    if not args.files:
+        args.files = ["pyproject.toml"]
 
     had_changes = False
     for file_name in args.files:
@@ -91,11 +92,11 @@ def main() -> int:
             print(f"[sort-pyproject] Skipping missing file: {path}", file=sys.stderr)
             continue
 
-        changed, original, updated = process_file(path, args.sections)
+        changed, original, updated = process_file(path, sections)
 
         # Warn about sections not found in the file (likely typos).
         content = path.read_text(encoding="utf-8")
-        for section in args.sections:
+        for section in sections:
             if not section_exists(content, section):
                 print(
                     f"[sort-pyproject] Warning: section '{section}' not found in {path}",
