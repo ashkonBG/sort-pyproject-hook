@@ -89,8 +89,11 @@ def main() -> int:
     for file_name in args.files:
         path = Path(file_name)
         if not path.exists():
-            print(f"[sort-pyproject] Skipping missing file: {path}", file=sys.stderr)
-            continue
+            print(
+                f"[sort-pyproject] Error: file not found: {path}",
+                file=sys.stderr,
+            )
+            return 1
 
         changed, original, updated = process_file(path, sections)
 
@@ -99,7 +102,7 @@ def main() -> int:
         for section in sections:
             if not section_exists(content, section):
                 print(
-                    f"[sort-pyproject] Warning: section '{section}' not found in {path}",
+                    f"[sort-pyproject] Error: section '{section}' not found in {path}",
                     file=sys.stderr,
                 )
                 return 1
