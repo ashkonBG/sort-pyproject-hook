@@ -1,16 +1,16 @@
 # sort-pyproject-hook
 
-Sorts array sections in `pyproject.toml` (case-insensitive).
-By default sorts `dependencies` and `dev`, but sections are configurable via `--sections`.
+Sorts array sections in `pyproject.toml` (case-insensitive) and normalizes indentation to four spaces.
+By default, sorts `dependencies` and `dev`, but sections are configurable via `--sections`.
 
 ## Arguments
 
-| Argument     | Type       | Default            | Description                                                                                                         |
-|--------------|------------|--------------------|---------------------------------------------------------------------------------------------------------------------|
-| `files`      | positional | `pyproject.toml`   | Files to process. Passed automatically by pre-commit. Overrides the default if provided. Skipped if file not found. |
-| `--sections` | optional   | `dependencies,dev` | Comma-separated section names to sort. Errors if a section is not found (catches typos).                            |
-| `--check`    | flag       | off                | Don't write changes; exit 1 if any file needs sorting.                                                              |
-| `--diff`     | flag       | off                | Print a unified diff of changes to stdout.                                                                          |
+| Argument     | Type       | Default            | Description                                                                              |
+|--------------|------------|--------------------|------------------------------------------------------------------------------------------|
+| `files`      | positional | `pyproject.toml`   | Files to process. Passed automatically by pre-commit. Overrides the default if provided. |
+| `--sections` | optional   | `dependencies,dev` | Comma-separated section names to sort. Errors if a section is not found (catches typos). |
+| `--check`    | flag       | off                | Don't write changes; exit 1 if any file needs sorting.                                   |
+| `--diff`     | flag       | off                | Print a unified diff of changes to stdout.                                               |
 
 ## Pre-commit usage
 
@@ -71,6 +71,17 @@ repos:
     hooks:
       - id: sort-pyproject
         files: ^pyproject\.toml$
+```
+
+To match `pyproject.toml` in subdirectories as well:
+
+```yaml
+repos:
+  - repo: https://github.com/your-username/sort-pyproject-hook
+    rev: v0.1.0
+    hooks:
+      - id: sort-pyproject
+        files: (^|/)pyproject\.toml$
 ```
 
 > **Note:** The `files` filter is evaluated by pre-commit *before* the hook runs.
