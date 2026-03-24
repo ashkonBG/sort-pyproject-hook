@@ -35,11 +35,15 @@ def sort_array_section(text: str, section_name: str) -> str:
     return pattern.sub(_repl, text)
 
 
-def process_file(path: Path) -> tuple[bool, str, str]:
+def process_file(path: Path, sections: list[str]) -> tuple[bool, str, str]:
     original = path.read_text(encoding="utf-8")
-    updated = sort_array_section(original, "dependencies")
-    updated = sort_array_section(updated, "dev")
+    updated = original
+
+    for section in sections:
+        updated = sort_array_section(updated, section)
+
     changed = updated != original
+
     return changed, original, updated
 
 
@@ -59,6 +63,12 @@ def main() -> int:
         help="Do not write changes; exit non-zero if any file would change.",
     )
     parser.add_argument(
+        "--sections",
+        nargs="+",
+        default=["dependencies", "dev"],
+        help="Section names to sort (default: dependencies dev)",
+    )
+    parser.add_argument(
         "--diff",
         action="store_true",
         help="Print unified diff for changed files.",
@@ -73,7 +83,7 @@ def main() -> int:
             print(f"[sort-pyproject] Skipping missing file: {path}", file=sys.stderr)
             continue
 
-        changed, original, updated = process_file(path)
+        changed, original, updated = process_file(path, args.sections)
         if not changed:
             continue
 
