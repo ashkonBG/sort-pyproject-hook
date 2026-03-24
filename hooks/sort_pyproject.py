@@ -35,6 +35,14 @@ def sort_array_section(text: str, section_name: str) -> str:
     return pattern.sub(_repl, text)
 
 
+def section_exists(text: str, section_name: str) -> bool:
+    pattern = re.compile(
+        rf"^\s*{re.escape(section_name)}\s*=\s*\[",
+        re.MULTILINE,
+    )
+    return pattern.search(text) is not None
+
+
 def process_file(path: Path, sections: list[str]) -> tuple[bool, str, str]:
     original = path.read_text(encoding="utf-8")
     updated = original
@@ -84,6 +92,17 @@ def main() -> int:
             continue
 
         changed, original, updated = process_file(path, args.sections)
+
+        # Warn about sections not found in the file (likely typos).
+        content = path.read_text(encoding="utf-8")
+        for section in args.sections:
+            if not section_exists(content, section):
+                print(
+                    f"[sort-pyproject] Warning: section '{section}' not found in {path}",
+                    file=sys.stderr,
+                )
+                return 1
+
         if not changed:
             continue
 
