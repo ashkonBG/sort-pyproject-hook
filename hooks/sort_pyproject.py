@@ -24,9 +24,11 @@ def sort_array_section(text: str, section_name: str) -> str:
         tail = match.group(3)
 
         lines = body.splitlines()
-        # Keep non-empty logical lines, case-insensitive sort.
-        items = [ln for ln in lines if ln.strip()]
+        # Keep non-empty logical lines, normalize indentation, case-insensitive sort.
+        items = [ln.strip() for ln in lines if ln.strip()]
         items_sorted = sorted(items, key=lambda s: s.lower())
+        # Re-indent with consistent 4-space indentation.
+        items_sorted = [f"    {item}" for item in items_sorted]
 
         if items_sorted:
             return f"{head}" + "\n".join(items_sorted) + "\n" + tail
